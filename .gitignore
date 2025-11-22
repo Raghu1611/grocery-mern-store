@@ -1,0 +1,67 @@
+# All log and text files
+*.log
+*.txt
+
+# Dependencies
+node_modules/
+*/node_modules/
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+backend-log.txt
+backend.log
+backend_direct.log
+backend_direct_v2.log
+debug_log.txt
+debug_output.txt
+debug_output_v2.txt
+debug_output_v3.txt
+test_result.log
+output.log
+
+# Test files
+test-gmail-smtp.js
+test_fs.txt
+test_output.txt
+
+# Build directories
+/frontend/dist
+/frontend/build
+/backend/dist
+/backend/build
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDE - IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# OS specific files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
