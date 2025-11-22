@@ -19,10 +19,47 @@ exports.addProduct = async (req, res) => {
   }
 };
 
-// Get all products
+// Get all products with search, filter, sort
 exports.getProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const { search, category, minPrice, maxPrice, minRating, sort } = req.query;
+
+    let query = { status: "active" };
+
+    // Text search
+    if (search) {
+      query.$text = { $search: search };
+    }
+
+    // Filter by category
+    if (category) {
+      query.category = category;
+    }
+
+    // Price range filter
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = Number(minPrice);
+      if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+
+    // Rating filter
+    if (minRating) {
+      query.averageRating = { $gte: Number(minRating) };
+    }
+
+    // Sort options
+    let sortOption = {};
+    if (sort === "price-asc") sortOption.price = 1;
+    else if (sort === "price-desc") sortOption.price = -1;
+    else if (sort === "rating") sortOption.averageRating = -1;
+    else if (sort === "newest") sortOption.createdAt = -1;
+    else sortOption.createdAt = -1; // Default
+
+    const products = await Product.find(query)
+      .populate("category", "name image")
+      .sort(sortOption);
+
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -32,7 +69,13 @@ exports.getProducts = async (req, res) => {
 // Get one product
 exports.getProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id)
+      .populate("category", "name description image");
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
     res.json(product);
   } catch (err) {
     res.status(500).json({ message: err.message });
