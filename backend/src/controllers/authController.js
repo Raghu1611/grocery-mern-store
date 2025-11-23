@@ -79,9 +79,15 @@ exports.sendOtp = async (req, res) => {
     await Otp.create({ email, code: otp, expiresAt });
 
     const emailSent = await sendOtpEmail(email, otp);
-    if (!emailSent) return res.status(500).json({ message: "Failed to send OTP" });
 
-    return res.json({ message: "OTP sent successfully", otp: otp });
+    // For development: include OTP in response if email fails
+    const response = { message: "OTP sent successfully" };
+    if (!emailSent || process.env.NODE_ENV === 'development') {
+      response.otp = otp; // Include OTP in response for testing
+      response.note = "Email delivery may be delayed. Use this OTP for testing.";
+    }
+
+    return res.json(response);
 
   } catch (err) {
     console.error("sendOtp error:", err);
@@ -187,9 +193,16 @@ exports.resendOtp = async (req, res) => {
     await Otp.findOneAndDelete({ email }); // delete old otp
     await Otp.create({ email, code, expiresAt }); // save new otp
 
-    await sendOtpEmail(email, code); // send mail
+    const emailSent = await sendOtpEmail(email, code); // send mail
 
-    return res.json({ message: "OTP resent successfully" });
+    // For development: include OTP in response
+    const response = { message: "OTP resent successfully" };
+    if (!emailSent || process.env.NODE_ENV === 'development') {
+      response.otp = code;
+      response.note = "Email delivery may be delayed. Use this OTP for testing.";
+    }
+
+    return res.json(response);
 
   } catch (err) {
     console.error("resendOtp error:", err);

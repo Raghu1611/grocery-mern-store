@@ -45,7 +45,7 @@ const AdminDashboard = () => {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-gray-600 text-sm">Total Revenue</p>
-                                <p className="text-2xl font-bold text-green-600">${stats?.total Revenue || 0}</p>
+                                <p className="text-2xl font-bold text-green-600">${stats?.totalRevenue || 0}</p>
                             </div>
                             <DollarSign className="w-12 h-12 text-green-600 bg-green-100 rounded-full p-2" />
                         </div>
@@ -112,8 +112,8 @@ const AdminDashboard = () => {
                                         <td className="py-3 px-4 font-semibold">${order.totalAmount}</td>
                                         <td className="py-3 px-4">
                                             <span className={`px-2 py-1 rounded-full text-xs ${order.status === 'delivered' ? 'bg-green-100 text-green-700' :
-                                                    order.status === 'cancelled' ? 'bg-red-100 text-red-700' :
-                                                        'bg-yellow-100 text-yellow-700'
+                                                order.status === 'cancelled' ? 'bg-red-100 text-red-700' :
+                                                    'bg-yellow-100 text-yellow-700'
                                                 }`}>
                                                 {order.status}
                                             </span>

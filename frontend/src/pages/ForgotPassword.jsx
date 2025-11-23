@@ -11,6 +11,7 @@ const ForgotPassword = () => {
     const [newPassword, setNewPassword] = useState('');
     const [step, setStep] = useState(1); // 1: Email, 2: OTP & Password
     const [loading, setLoading] = useState(false);
+    const [displayOtp, setDisplayOtp] = useState(null); // Store OTP from response
     const navigate = useNavigate();
 
     const handleSendOtp = async (e) => {
@@ -19,20 +20,10 @@ const ForgotPassword = () => {
         try {
             const response = await api.post('/auth/send-otp', { email });
 
-            // Display OTP from response (workaround for email block)
+            // Check if OTP is in the response (for development/testing)
             if (response.data.otp) {
-                toast.success(`OTP: ${response.data.otp} (Check console for email block)`, {
-                    duration: 10000,
-                    style: {
-                        background: '#10b981',
-                        color: 'white',
-                        fontSize: '18px',
-                        fontWeight: 'bold'
-                    }
-                });
-                console.log('='.repeat(50));
-                console.log(`YOUR OTP CODE: ${response.data.otp}`);
-                console.log('='.repeat(50));
+                setDisplayOtp(response.data.otp);
+                toast.success(`OTP: ${response.data.otp} (Check console or email)`);
             } else {
                 toast.success('OTP sent to your email');
             }
@@ -116,6 +107,14 @@ const ForgotPassword = () => {
                         <p className="text-gray-600 mb-8">
                             We've sent an OTP to <strong>{email}</strong>. Please check your inbox and enter the code below.
                         </p>
+
+                        {displayOtp && (
+                            <div className="mb-6 p-4 bg-green-50 border-2 border-green-500 rounded-lg">
+                                <p className="text-sm text-gray-600 mb-2">📧 Email delivery may be delayed. Use this OTP:</p>
+                                <p className="text-3xl font-bold text-green-600 tracking-widest text-center">{displayOtp}</p>
+                                <p className="text-xs text-gray-500 mt-2 text-center">Valid for 5 minutes</p>
+                            </div>
+                        )}
 
                         <form className="space-y-6" onSubmit={handleResetPassword}>
                             <div className="rounded-md shadow-sm space-y-4 text-left">
