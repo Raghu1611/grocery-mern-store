@@ -1,6 +1,5 @@
-import { createContext, useState, useEffect, useContext } from 'react';
-import api from '../services/api';
-import { toast } from 'react-hot-toast';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
@@ -11,68 +10,31 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const checkAuth = async () => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                try {
-                    // Verify token by fetching user profile or just assume valid for now if no verify endpoint
-                    // Ideally we should have a /me endpoint. For now, we'll decode or just set user if we stored it.
-                    // Let's try to fetch user details if possible, or just trust the token until 401.
-                    // Assuming we stored user info in localStorage for simplicity or we can fetch it.
-                    const storedUser = localStorage.getItem('user');
-                    if (storedUser) {
-                        setUser(JSON.parse(storedUser));
-                    }
-                } catch (error) {
-                    console.error("Auth check failed", error);
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                }
-            }
-            setLoading(false);
-        };
-        checkAuth();
+        const token = localStorage.getItem('token');
+        const storedUser = localStorage.getItem('user');
+        if (token && storedUser) {
+            setUser(JSON.parse(storedUser));
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
+        setLoading(false);
     }, []);
 
-    const login = async (email, password) => {
-        try {
-            const response = await api.post('/auth/login', { email, password });
-            const { token, user } = response.data;
-            localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(user));
-            setUser(user);
-            toast.success('Login successful!');
-            return true;
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Login failed');
-            return false;
-        }
-    };
-
-    const register = async (name, email, password) => {
-        try {
-            const response = await api.post('/auth/register', { name, email, password });
-            const { token, user } = response.data;
-            localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(user));
-            setUser(user);
-            toast.success('Registration successful!');
-            return true;
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Registration failed');
-            return false;
-        }
+    const login = (userData, token) => {
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(userData));
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        setUser(userData);
     };
 
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        delete axios.defaults.headers.common['Authorization'];
         setUser(null);
-        toast.success('Logged out successfully');
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );

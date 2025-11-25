@@ -1,0 +1,41 @@
+﻿node : node:internal/modules/
+cjs/loader:1215
+At line:1 char:1
++ node ./node_modules/vite/bi
+n/vite.js 2>&1 | Out-File 
+-Encoding utf8 v ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (node:in  
+  ternal/modules/cjs/loade   
+ r:1215:String) [], Remot    
+eException
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+  throw err;
+  ^
+
+Error: Cannot find module 'C:
+\Users\DHANUNJAI\grocery-mern
+\frontend\node_modules\vite\b
+in\vite.js'
+    at 
+Module._resolveFilename (node
+:internal/modules/cjs/loader:
+1212:15)
+    at Module._load (node:int
+ernal/modules/cjs/loader:1043
+:27)
+    at Function.executeUserEn
+tryPoint [as runMain] (node:i
+nternal/modules/run_main:164:
+12)
+    at node:internal/main/run
+_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.19.0

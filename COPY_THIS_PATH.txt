@@ -1,0 +1,1 @@
+c:\Users\DHANUNJAI\grocery-mern\run_daily_commits.bat
